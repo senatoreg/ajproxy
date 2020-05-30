@@ -1,0 +1,11 @@
+-*- mode: org -*-
+
+* DONE Parametrizzare la configurazione
+** DONE Definire il formato (YAML, JSON, XML?)
+** DONE Definire la granularitá dei parametri
+*** DONE Gestione di multiplit AJP Listener?
+*** DONE Gestione di multiple URI per singolo AJP Listener? (aka multiple PrefixPath)
+*** DONE ProxyThreads e ConnectionPerThread per URI?
+* TODO Impostare il sistema di logging
+** TODO Logging applicativo
+** TODO Logging del framework Undertow

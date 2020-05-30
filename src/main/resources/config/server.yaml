@@ -1,0 +1,13 @@
+listener:
+  - address: "localhost"
+    port: 9090
+    threads: 10
+    path:
+      - prefix: "/ajproxy"
+        connections: 20
+        threads: 10
+        timeout: 5
+        host:
+          - address: "it.yahoo.com"
+            port: 443
+            ssl: "true"
