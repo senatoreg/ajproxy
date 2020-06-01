@@ -33,32 +33,35 @@ public class AjpReverseProxyServer {
 		PathHandler path = Handlers.path();
 
 		    for ( PrefixPath prefixPath : listener.getPath() ) {
-		    Xnio xnio = Xnio.getInstance();
+			Xnio xnio = Xnio.getInstance();
 
-		    OptionMap socketOptions = OptionMap.builder()
-			.set(Options.WORKER_IO_THREADS, prefixPath.getThreads())
-			.set(Options.TCP_NODELAY, true)
-			.set(Options.REUSE_ADDRESSES, true)
-			.getMap();
+			OptionMap socketOptions = OptionMap.builder()
+			    .set(Options.WORKER_IO_THREADS, prefixPath.getThreads())
+			    .set(Options.TCP_NODELAY, true)
+			    .set(Options.REUSE_ADDRESSES, true)
+			    .getMap();
 
-		    XnioSsl jsseXnioSsl = new JsseXnioSsl(xnio, socketOptions);
+			XnioSsl jsseXnioSsl = new JsseXnioSsl(xnio, socketOptions);
 	    
-		    LoadBalancingProxyClient loadBalancer = new LoadBalancingProxyClient()
-		    .setConnectionsPerThread(prefixPath.getConnections());
+			LoadBalancingProxyClient loadBalancer = new LoadBalancingProxyClient()
+			    .setConnectionsPerThread(prefixPath.getConnections());
 
-		    for ( BalancedHost balancedHost : prefixPath.getHost() )
-			loadBalancer.addHost(new URI(balancedHost.getURI()), jsseXnioSsl);
+			for ( BalancedHost balancedHost : prefixPath.getHost() )
+			    loadBalancer.addHost(new URI(balancedHost.getURI()), null, jsseXnioSsl, socketOptions);
 
-		    path.addPrefixPath(prefixPath.getPrefix(),ProxyHandler.builder().setProxyClient(loadBalancer).setMaxRequestTime(prefixPath.getTimeout()).setRewriteHostHeader(true).build());
-		}
+			path.addPrefixPath(prefixPath.getPrefix(),
+					   ProxyHandler.builder().setProxyClient(loadBalancer)
+					   .setMaxRequestTime(prefixPath.getTimeout())
+					   .setRewriteHostHeader(true).build());
+		    }
 
-		final Undertow reverseProxy = Undertow.builder()
-		    .addAjpListener(listener.getPort(), listener.getAddress())
-		    .setIoThreads(listener.getThreads())
-		    .setHandler(path)
-		    //.setHandler(ProxyHandler.builder().setProxyClient(loadBalancer).setMaxRequestTime(30000).setRewriteHostHeader(true).build())
-		    .build();
-		reverseProxy.start();
+		    final Undertow reverseProxy = Undertow.builder()
+			.addAjpListener(listener.getPort(), listener.getAddress())
+			.setIoThreads(listener.getThreads())
+			.setHandler(path)
+			//.setHandler(ProxyHandler.builder().setProxyClient(loadBalancer).setMaxRequestTime(30000).setRewriteHostHeader(true).build())
+			.build();
+		    reverseProxy.start();
 	    }
 
         } catch (URISyntaxException e) {
