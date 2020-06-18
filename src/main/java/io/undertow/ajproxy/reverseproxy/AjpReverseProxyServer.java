@@ -47,7 +47,8 @@ public class AjpReverseProxyServer {
 			    .setConnectionsPerThread(prefixPath.getConnections());
 
 			for ( BalancedHost balancedHost : prefixPath.getHost() )
-			    loadBalancer.addHost(new URI(balancedHost.getURI()), null, jsseXnioSsl, socketOptions);
+			    loadBalancer.addHost(new URI(balancedHost.getURI() + prefixPath.getPrefix()),
+						 null, jsseXnioSsl, socketOptions);
 
 			path.addPrefixPath(prefixPath.getPrefix(),
 					   ProxyHandler.builder().setProxyClient(loadBalancer)
