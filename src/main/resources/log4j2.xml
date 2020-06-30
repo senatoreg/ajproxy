@@ -6,7 +6,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="io.undertow.ajproxy" level="trace" additivity="false">
+        <Logger name="io.undertow.ajproxy" level="info" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Logger name="io.undertow" level="info" additivity="false">
