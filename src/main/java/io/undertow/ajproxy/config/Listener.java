@@ -1,12 +1,18 @@
 package io.undertow.ajproxy.config;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class Listener {
+    private static final Logger logger = LogManager.getLogger(Listener.class);
+
     private String address;
     private int port;
     private int threads;
     private PrefixPath[] path;
 
     public void setAddress(String address) {
+	logger.debug("setting listener address {}", address);
 	this.address = address;
     }
 
@@ -15,6 +21,7 @@ public class Listener {
     }
 
     public void setPort(int port) {
+	logger.debug("setting listener port {}", port);
 	this.port = port;
     }
 
@@ -23,6 +30,7 @@ public class Listener {
     }
 
     public void setThreads(int threads) {
+	logger.debug("setting listener threads {}", threads);
 	this.threads = threads;
     }
 
@@ -31,6 +39,7 @@ public class Listener {
     }
 
     public void setPath(PrefixPath[] path) {
+	logger.debug("loading {} listener(s) for {}:{}", path.length, this.address, this.port);
 	this.path = path;
     }
 

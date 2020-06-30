@@ -9,7 +9,12 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import java.io.FileNotFoundException;
 import java.io.IOException;
  
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class ServerConfig {
+    private static final Logger logger = LogManager.getLogger(ServerConfig.class);
+
     private InputStream inputStream;
 
     private Server server;
@@ -33,10 +38,11 @@ public class ServerConfig {
 	    if ((yamlFileName = System.getProperty("serverConfigFile")) != null)
 		inputStream = new FileInputStream(yamlFileName);
 	    else {
-		yamlFileName = "config/server.yaml";
+		yamlFileName = "server.yaml";
 		inputStream = getClass().getClassLoader().getResourceAsStream(yamlFileName);
 	    }
 
+	    logger.info("loading configuration from file {}", yamlFileName);
 	    if (inputStream != null) {
 	        server = mapper.readValue(inputStream, Server.class);
 	    } else {
@@ -52,10 +58,12 @@ public class ServerConfig {
     }
 
     public static ServerConfig getInstance() {
+	logger.debug("getting configuration instance");
 	return serverConfig;
     }
 
     public Server getServer() {
+	logger.debug("getting server configuration");
 	return this.server;
     }
 }

@@ -1,0 +1,22 @@
+listener:
+  - address: "localhost"
+    port: 8009
+    threads: 10
+    path:
+      - prefix: "/ajproxy"
+        connections: 20
+        threads: 10
+        timeout: 5
+        host:
+          - uri: "https://localhost:8443/prefix"
+            address: "localhost"
+            port: 8443
+            ssl: "true"
+            context: "/prefix"
+filter:
+  response:
+    header:
+      transform:
+        - name: "Transfer-Encoding"
+          pattern: "[ ]*chunked[,; ]*"
+          replacement: ""

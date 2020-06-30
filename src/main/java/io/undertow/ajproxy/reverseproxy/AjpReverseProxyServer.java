@@ -11,16 +11,23 @@ import org.xnio.ssl.XnioSsl;
 
 import io.undertow.Handlers;
 import io.undertow.Undertow;
+import io.undertow.UndertowOptions;
 import io.undertow.ajproxy.config.ServerConfig;
 import io.undertow.ajproxy.config.Server;
 import io.undertow.ajproxy.config.Listener;
 import io.undertow.ajproxy.config.PrefixPath;
 import io.undertow.ajproxy.config.BalancedHost;
+import io.undertow.ajproxy.handlers.AjpProxyHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.proxy.LoadBalancingProxyClient;
 import io.undertow.server.handlers.proxy.ProxyHandler;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class AjpReverseProxyServer {
+    private static final Logger logger = LogManager.getLogger(AjpReverseProxyServer.class);
+
     private static ServerConfig serverConfig;
 
     public static void main(final String[] args) {
@@ -28,6 +35,7 @@ public class AjpReverseProxyServer {
         try {
 	    serverConfig = ServerConfig.getInstance();
 	    Server server = serverConfig.getServer();
+	    AjpProxyHandler ajpProxyHandler;
 
 	    for ( Listener listener : server.getListener() ) {
 		PathHandler path = Handlers.path();
@@ -47,16 +55,19 @@ public class AjpReverseProxyServer {
 			    .setConnectionsPerThread(prefixPath.getConnections());
 
 			for ( BalancedHost balancedHost : prefixPath.getHost() )
-			    loadBalancer.addHost(new URI(balancedHost.getURI() + prefixPath.getPrefix()),
+			    loadBalancer.addHost(new URI(balancedHost.getBalancedUri()),
 						 null, jsseXnioSsl, socketOptions);
 
-			path.addPrefixPath(prefixPath.getPrefix(),
-					   ProxyHandler.builder().setProxyClient(loadBalancer)
-					   .setMaxRequestTime(prefixPath.getTimeout())
-					   .setRewriteHostHeader(true).build());
+			ajpProxyHandler = new AjpProxyHandler(ProxyHandler.builder()
+						.setProxyClient(loadBalancer)
+						.setMaxRequestTime(prefixPath.getTimeout())
+						.setRewriteHostHeader(true).build());
+
+			path.addPrefixPath(prefixPath.getPrefix(), ajpProxyHandler);
 		    }
 
 		    final Undertow reverseProxy = Undertow.builder()
+			.setServerOption(UndertowOptions.URL_CHARSET, "UTF-8")
 			.addAjpListener(listener.getPort(), listener.getAddress())
 			.setIoThreads(listener.getThreads())
 			.setHandler(path)

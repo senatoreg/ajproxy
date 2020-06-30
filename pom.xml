@@ -9,8 +9,10 @@
   <url>http://maven.apache.org</url>
 
   <properties>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <!--maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target-->
+    <maven.compiler.source>8</maven.compiler.source>
+    <maven.compiler.target>8</maven.compiler.target>
   </properties>
   
   <dependencies>
@@ -24,7 +26,7 @@
     <dependency>
       <groupId>io.undertow</groupId>
       <artifactId>undertow-parent</artifactId>
-      <version>2.1.0.Final</version>
+      <version>2.1.1.Final</version>
       <type>pom</type>
     </dependency>
     <!-- https://mvnrepository.com/artifact/io.undertow/undertow-core -->
@@ -43,6 +45,35 @@
       <groupId>com.fasterxml.jackson.dataformat</groupId>
       <artifactId>jackson-dataformat-yaml</artifactId>
       <version>2.9.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>2.13.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>2.13.3</version>
+    </dependency>
+    <!-- https://logging.apache.org/log4j/2.x/manual/async.html -->
+    <dependency>
+      <groupId>com.lmax</groupId>
+      <artifactId>disruptor</artifactId>
+      <version>3.4.2</version>
+    </dependency>
+    <!-- slf4j bridge to log4j
+         <dependency>
+         <groupId>org.apache.logging.log4j</groupId>
+         <artifactId>log4j-slf4j-impl</artifactId>
+         <version>${log4j.version}</version>
+         </dependency>
+    -->
+    <!-- SMTPAppender need this  -->
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
+      <version>1.6.2</version>
     </dependency>
   </dependencies>
 
