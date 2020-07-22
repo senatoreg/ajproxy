@@ -71,7 +71,6 @@ public class AjpReverseProxyServer {
 			.addAjpListener(listener.getPort(), listener.getAddress())
 			.setIoThreads(listener.getThreads())
 			.setHandler(path)
-			//.setHandler(ProxyHandler.builder().setProxyClient(loadBalancer).setMaxRequestTime(30000).setRewriteHostHeader(true).build())
 			.build();
 		    reverseProxy.start();
 	    }
